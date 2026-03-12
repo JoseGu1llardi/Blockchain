@@ -21,6 +21,10 @@ import com.hashfold.blockchain.model.MineResponse;
 import com.hashfold.blockchain.model.TransactionResponse;
 import com.hashfold.blockchain.service.Blockchain;
 import com.hashfold.blockchain.util.BlockProofOfWorkGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Exposes Basic Blockchain related APIs.
@@ -28,6 +32,7 @@ import com.hashfold.blockchain.util.BlockProofOfWorkGenerator;
  * @author Praveendra Singh
  *
  */
+@Api(value = "Blockchain API", description = "Endpoints for mining blocks, submitting transactions, and inspecting the chain")
 @RestController
 @RequestMapping("/")
 public class BlockchainController {
@@ -42,6 +47,8 @@ public class BlockchainController {
 	public static final String NODE_ACCOUNT_ADDRESS = "0";
 	public static final BigDecimal MINING_CASH_AWARD = BigDecimal.ONE;
 
+	@ApiOperation(value = "Mine a new block", notes = "Runs proof-of-work, rewards the miner and appends a new block to the chain")
+	@ApiResponses({ @ApiResponse(code = 200, message = "Block mined successfully", response = MineResponse.class) })
 	@GetMapping("/mine")
 	public MineResponse mine() throws JsonProcessingException {
 
@@ -61,14 +68,21 @@ public class BlockchainController {
 
 		return MineResponse.builder().message("New Block Forged").index(newBlock.getIndex())
 				.transactions(newBlock.getTransactions()).proof(newBlock.getProof())
-				.previousHsh(newBlock.getPreviousHash()).build();
+				.previousHash(newBlock.getPreviousHash()).build();
 	}
 
+	@ApiOperation(value = "Get full chain", notes = "Returns the complete blockchain with its length")
+	@ApiResponses({ @ApiResponse(code = 200, message = "Chain retrieved successfully", response = ChainResponse.class) })
 	@GetMapping("/chain")
 	public ChainResponse fullChain() throws JsonProcessingException {
 		return ChainResponse.builder().chain(blockChain.getChain()).length(blockChain.getChain().size()).build();
 	}
 
+	@ApiOperation(value = "Submit a new transaction", notes = "Adds a transaction to the pending pool; returns the index of the block that will include it")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Transaction queued", response = TransactionResponse.class),
+		@ApiResponse(code = 400, message = "Invalid transaction payload")
+	})
 	@PostMapping("/transactions")
 	public TransactionResponse newTransaction(@RequestBody @Valid Transaction trans) throws JsonProcessingException {
 
