@@ -27,7 +27,7 @@ public class BlockProofOfWorkGenerator {
      * Find a number p that when hashed with the previous block’s solution a
      * hash with 4 leading 0s is produced.
      */
-    public static String PROOF_OF_WORK = "0000";
+    public static final String PROOF_OF_WORK = "0000";
 
     public static Long proofOfWork(Long lastProof) {
 
@@ -41,7 +41,7 @@ public class BlockProofOfWorkGenerator {
 
     public static boolean validProof(Long lastProof, Long proof) {
 
-        String s = "" + lastProof + "" + proof;
+        String s = Long.toString(lastProof) + Long.toString(proof);
 
         String sha256 = Hashing.sha256().hashString(s, StandardCharsets.UTF_8).toString();
 

@@ -52,10 +52,10 @@ public class Blockchain {
 		return lastBlock().getIndex() + 1L;
 	}
 
-	public Block createBlock(Long proof, String previusHash) throws JsonProcessingException {
+	public Block createBlock(Long proof, String previousHash) throws JsonProcessingException {
 
 		Block block = Block.builder().index(chain.size() + 1L)
-				.previousHash((previusHash != null) ? previusHash : lastBlock().hash(mapper)).proof(proof)
+				.previousHash((previousHash != null) ? previousHash : lastBlock().hash(mapper)).proof(proof)
 				.timestamp(new Date().getTime()).transactions(currentTransactions).build();
 
 		// add new block to the chain.

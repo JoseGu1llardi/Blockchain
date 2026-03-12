@@ -26,5 +26,5 @@ public class MineResponse {
 	private Long index;
 	private List<Transaction> transactions;
 	private Long proof;
-	private String previousHsh;
+	private String previousHash;
 }
